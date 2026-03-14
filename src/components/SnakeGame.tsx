@@ -7,11 +7,40 @@ const INITIAL_SPEED = 150;
 type Position = { x: number; y: number };
 type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 
+type FoodType = {
+  name: string;
+  points: number;
+  color: string;
+  glowColor: string;
+};
+
+const FOOD_TYPES: FoodType[] = [
+  { name: "Normal", points: 10, color: "bg-red-500", glowColor: "shadow-red-500/50" },
+  { name: "Bonus", points: 25, color: "bg-yellow-400", glowColor: "shadow-yellow-400/50" },
+  { name: "Super", points: 50, color: "bg-purple-500", glowColor: "shadow-purple-500/50" },
+];
+
+type Food = {
+  position: Position;
+  type: FoodType;
+};
+
 function getRandomPosition(): Position {
   return {
     x: Math.floor(Math.random() * GRID_SIZE),
     y: Math.floor(Math.random() * GRID_SIZE),
   };
+}
+
+function getRandomFoodType(): FoodType {
+  const roll = Math.random();
+  if (roll < 0.1) return FOOD_TYPES[2];  // 10% chance: Super (50 pts)
+  if (roll < 0.3) return FOOD_TYPES[1];  // 20% chance: Bonus (25 pts)
+  return FOOD_TYPES[0];                   // 70% chance: Normal (10 pts)
+}
+
+function spawnFood(): Food {
+  return { position: getRandomPosition(), type: getRandomFoodType() };
 }
 
 function SnakeGame() {
@@ -20,7 +49,10 @@ function SnakeGame() {
     { x: 9, y: 10 },
     { x: 8, y: 10 },
   ]);
-  const [food, setFood] = useState<Position>({ x: 15, y: 15 });
+  const [food, setFood] = useState<Food>({
+    position: { x: 15, y: 15 },
+    type: FOOD_TYPES[0],
+  });
   const [direction, setDirection] = useState<Direction>("RIGHT");
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
@@ -35,7 +67,7 @@ function SnakeGame() {
       { x: 9, y: 10 },
       { x: 8, y: 10 },
     ]);
-    setFood(getRandomPosition());
+    setFood(spawnFood());
     setDirection("RIGHT");
     setGameOver(false);
     setScore(0);
@@ -83,9 +115,9 @@ function SnakeGame() {
       const newSnake = [head, ...prevSnake];
 
       // Food collision
-      if (head.x === food.x && head.y === food.y) {
-        setScore((s) => s + 10);
-        setFood(getRandomPosition());
+      if (head.x === food.position.x && head.y === food.position.y) {
+        setScore((s) => s + food.type.points);
+        setFood(spawnFood());
       } else {
         newSnake.pop();
       }
@@ -154,10 +186,10 @@ function SnakeGame() {
 
         {/* Food */}
         <div
-          className="absolute bg-red-500 rounded-full"
+          className={`absolute ${food.type.color} rounded-full shadow-lg ${food.type.glowColor}`}
           style={{
-            left: food.x * CELL_SIZE,
-            top: food.y * CELL_SIZE,
+            left: food.position.x * CELL_SIZE,
+            top: food.position.y * CELL_SIZE,
             width: CELL_SIZE - 1,
             height: CELL_SIZE - 1,
           }}
@@ -195,6 +227,15 @@ function SnakeGame() {
       <p className="text-gray-500 text-sm mt-2">
         Use arrow keys to control the snake
       </p>
+
+      <div className="flex gap-4 text-sm text-gray-400 mt-1">
+        {FOOD_TYPES.map((ft) => (
+          <div key={ft.name} className="flex items-center gap-1.5">
+            <span className={`inline-block w-3 h-3 rounded-full ${ft.color}`} />
+            <span>{ft.name}: {ft.points} pts</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
