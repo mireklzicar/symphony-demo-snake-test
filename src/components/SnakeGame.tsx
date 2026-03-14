@@ -12,12 +12,25 @@ type FoodType = {
   points: number;
   color: string;
   glowColor: string;
+  particleColor: string;
+};
+
+type Particle = {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  color: string;
+  opacity: number;
+  life: number;
 };
 
 const FOOD_TYPES: FoodType[] = [
-  { name: "Normal", points: 10, color: "bg-red-500", glowColor: "shadow-red-500/50" },
-  { name: "Bonus", points: 25, color: "bg-yellow-400", glowColor: "shadow-yellow-400/50" },
-  { name: "Super", points: 50, color: "bg-purple-500", glowColor: "shadow-purple-500/50" },
+  { name: "Normal", points: 10, color: "bg-red-500", glowColor: "shadow-red-500/50", particleColor: "#ef4444" },
+  { name: "Bonus", points: 25, color: "bg-yellow-400", glowColor: "shadow-yellow-400/50", particleColor: "#facc15" },
+  { name: "Super", points: 50, color: "bg-purple-500", glowColor: "shadow-purple-500/50", particleColor: "#a855f7" },
 ];
 
 type Food = {
