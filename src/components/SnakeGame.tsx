@@ -25,9 +25,12 @@ function SnakeGame() {
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [wallWrap, setWallWrap] = useState(false);
 
   const directionRef = useRef(direction);
   directionRef.current = direction;
+  const wallWrapRef = useRef(wallWrap);
+  wallWrapRef.current = wallWrap;
 
   const resetGame = useCallback(() => {
     setSnake([
@@ -61,16 +64,21 @@ function SnakeGame() {
           break;
       }
 
-      // Wall collision
+      // Wall collision / wrap
       if (
         head.x < 0 ||
         head.x >= GRID_SIZE ||
         head.y < 0 ||
         head.y >= GRID_SIZE
       ) {
-        setGameOver(true);
-        setIsRunning(false);
-        return prevSnake;
+        if (wallWrapRef.current) {
+          head.x = ((head.x % GRID_SIZE) + GRID_SIZE) % GRID_SIZE;
+          head.y = ((head.y % GRID_SIZE) + GRID_SIZE) % GRID_SIZE;
+        } else {
+          setGameOver(true);
+          setIsRunning(false);
+          return prevSnake;
+        }
       }
 
       // Self collision
@@ -181,7 +189,7 @@ function SnakeGame() {
         )}
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center">
         {(!isRunning || gameOver) && (
           <button
             onClick={resetGame}
@@ -190,6 +198,15 @@ function SnakeGame() {
             {gameOver ? "Play Again" : "Start"}
           </button>
         )}
+        <label className="flex items-center gap-2 text-white cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={wallWrap}
+            onChange={(e) => setWallWrap(e.target.checked)}
+            className="w-4 h-4 accent-green-500"
+          />
+          Wall Wrap
+        </label>
       </div>
 
       <p className="text-gray-500 text-sm mt-2">
