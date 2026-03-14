@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Fix food spawning on top of the snake",
+    "body": "The food can currently appear on a cell already occupied by the snake body. Update the spawn logic so food always appears on an empty cell only."
+  },
+  {
+    "title": "Add pause and resume controls",
+    "body": "Add a pause/resume button and support the Space key as a keyboard shortcut. Keep the current Start / Play Again flow intact."
+  },
+  {
+    "title": "Support WASD controls",
+    "body": "Players should be able to control the snake with W A S D in addition to the arrow keys."
+  },
+  {
+    "title": "Make the game board responsive on small screens",
+    "body": "The current board overflows on smaller laptops and phones. Make the layout responsive while keeping the game playable and visually centered."
+  },
+  {
+    "title": "Persist the high score in localStorage",
+    "body": "Track the highest score reached across sessions and save it to localStorage. Display the high score near the current score."
+  },
+  {
+    "title": "Extract gameplay constants into a config module",
+    "body": "Move hard-coded gameplay constants such as grid size, cell size, and initial speed out of the main component into a dedicated config module."
+  }
+]
